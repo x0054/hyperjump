@@ -15,7 +15,6 @@ function jr() {
 	wd=`pwd`
 	nick=${wd##*/}
 	nick=${nick// /_}
-	echo $nick
 
 	if grep -q "$wd$" $db
 	then
@@ -59,30 +58,45 @@ function jr() {
 # Jump Forget - Rmoves a jump location from the database
 function jf() {
 	db=`hyperjumpdatabase`
-	wd=`pwd`
-
-	if grep -q "$wd$" $db
+	
+	if [ -z $1 ]
 	then
-		dbline=`grep "$wd$" $db | head -n 1`
-		nick=${dbline%:*}
-	    echo "This directory is in the database with nickname \"$nick\""
-		read -p "Forget It? [Y/N]: " -n 1 -e choice
-		case $choice in
-			"Y" | "y" )
-				tempfile=`mktemp -t "jumpdb"`
-				grep -v "$wd$" $db > $tempfile
-				cat $tempfile > $db
-				rm $tempfile
-				echo "Directory is forgotten!"
-				;;
-			* )
-				echo "Nothing was deleted from the database. Quitting."
-				exit
-				;;
-		esac
+		wd=`pwd`
+		if grep -q ":$wd$" $db
+		then
+			dbline=`grep ":$wd$" $db | head -n 1`
+			nickname=${dbline%:*}
+		else
+			echo "This directory is not in the database!"
+			return
+		fi
 	else
-		echo "This directory is not in the database!"
-	fi
+		nickname=$1
+		if grep -q "^$nickname:" $db
+		then
+			line=`grep "^$nickname:" $db | head -n 1`
+			wd=${line#*:}
+		else
+			echo "This nickname is not in the database!"
+			return
+		fi
+	fi	
+
+    echo "$nickname : $wd"
+	read -p "Forget It? [Y/N]: " -n 1 -e choice
+	case $choice in
+		"Y" | "y" )
+			tempfile=`mktemp -t "jumpdb"`
+			grep -v ":$wd$" $db > $tempfile
+			cat $tempfile > $db
+			rm $tempfile
+			echo "$nickname is forgotten!"
+			;;
+		* )
+			echo "Nothing was deleted from the database. Quitting."
+			return
+			;;
+	esac
 }
 
 # Jump to Nickname - Shows the Dialog Menu with all of the jumps in the db
@@ -109,7 +123,7 @@ function jj() {
 	# Check if the Jump is legit, and jump
 	if grep -q "^$choice:" $db
 	then
-		line=`grep "$choice" $db | head -n 1`
+		line=`grep "^$choice:" $db | head -n 1`
 		target=${line#*:}
 		echo Navigating to $choice at $target
 		cd "$target"
@@ -136,4 +150,13 @@ _jj() {
     local cur=${COMP_WORDS[COMP_CWORD]}
     COMPREPLY=( $(compgen -W "$list" -- $cur) )
 }
+_jr() {
+	wd=`pwd`
+	nick=${wd##*/}
+	nick=${nick// /_}	
+    local cur=${COMP_WORDS[COMP_CWORD]}
+    COMPREPLY=( $(compgen -W "$nick" -- $cur) )
+}
 complete -F _jj jj
+complete -F _jj jf
+complete -F _jr jr
