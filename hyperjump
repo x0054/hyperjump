@@ -1,0 +1,139 @@
+# Set Up the Database if it does not exist yet
+function hyperjumpdatabase() {
+	db=${HOME}/.hyperjumpdb
+	if [ ! -f $db ]
+	then
+	    touch $db
+		echo "HOME:${HOME}" >> $db
+	fi
+	echo $db
+}
+
+# Jump Remamber - Adds a jump to the database
+function jr() {
+	db=`hyperjumpdatabase`
+	wd=`pwd`
+	nick=${wd##*/}
+	nick=${nick// /_}
+	echo $nick
+
+	if grep -q "$wd$" $db
+	then
+	    echo "This directory is already added to the database. Run 'jf' to forget it."
+	else
+		if [ -z "$1" ]
+		then
+			echo "We need a nickname for this directory. Use jr <name> or specify it now."
+			read -p "[C]ancel, [U]se \"$nick\", Enter [N]ickname [C/U/N]: " -n 1 -e choice
+			case $choice in
+				"U" | "u" )
+					echo "We are going to use $nick as the nickname for this directory."
+					;;
+				"N" | "n" )
+					nick=
+					while [[ $nick = "" ]]; do
+					   read -p "Enter a Nickname for this Directory and Press [Enter]: " -e nick
+					done
+					;;
+				* )
+					echo "Nothing was added to the database. Quitting."
+					exit
+					;;
+			esac
+		else
+			nick=$1
+		fi
+	
+		nick=${nick// /_}
+	
+		if grep -q "^$nick:" $db
+		then
+			echo "Oops, the nickname '$nick' is already in use :( Try again...."
+		else
+			echo "$nick:$wd" >> $db
+			echo "Added $wd with Nickname \"$nick\" to the database."
+		fi
+	fi
+}
+
+# Jump Forget - Rmoves a jump location from the database
+function jf() {
+	db=`hyperjumpdatabase`
+	wd=`pwd`
+
+	if grep -q "$wd$" $db
+	then
+		dbline=`grep "$wd$" $db | head -n 1`
+		nick=${dbline%:*}
+	    echo "This directory is in the database with nickname \"$nick\""
+		read -p "Forget It? [Y/N]: " -n 1 -e choice
+		case $choice in
+			"Y" | "y" )
+				tempfile=`mktemp -t "jumpdb"`
+				grep -v "$wd$" $db > $tempfile
+				cat $tempfile > $db
+				rm $tempfile
+				echo "Directory is forgotten!"
+				;;
+			* )
+				echo "Nothing was deleted from the database. Quitting."
+				exit
+				;;
+		esac
+	else
+		echo "This directory is not in the database!"
+	fi
+}
+
+# Jump to Nickname - Shows the Dialog Menu with all of the jumps in the db
+function jj() {
+	db=`hyperjumpdatabase`
+	
+	# If no name on the prompt, than pop up the dialog, else use $1
+	if [ -z $1 ]
+	then
+		list=""
+		while read line
+		do
+			line="'${line%:*}' '${line#*:}' "
+			list+=$line
+		done < <(cat $db)
+
+		cmd="dialog --menu 'Where do you want to jump to?' 22 76 16 $list"
+		choice=`eval $cmd 2>&1 >/dev/tty`
+		clear
+	else
+		choice=$1
+	fi
+	
+	# Check if the Jump is legit, and jump
+	if grep -q "^$choice:" $db
+	then
+		line=`grep "$choice" $db | head -n 1`
+		target=${line#*:}
+		echo Navigating to $choice at $target
+		cd "$target"
+	else
+		if [ -z $choice ]
+		then
+			echo "Jump Cancelled"
+		else
+			echo "Jump Nickname isn't in the Database"
+		fi
+	fi
+}
+
+# Autocomplete for Jump to Nickname
+_jj() {
+	db=`hyperjumpdatabase`
+
+	list=""
+	while read line
+	do
+		list+=" ${line%:*}"
+	done < <(cat $db)
+	
+    local cur=${COMP_WORDS[COMP_CWORD]}
+    COMPREPLY=( $(compgen -W "$list" -- $cur) )
+}
+complete -F _jj jj
