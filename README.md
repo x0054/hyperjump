@@ -11,6 +11,15 @@ HyperJump consists of 3 command line commands (functions).
 All of the commands have autocomplete. Both __jj__ and __jf__ will autocomplete with nicknames of bookmarked locations. The __jr__ command will autocomplete with the basename of the current directory.
 
 ## How To Install
+
+To get the list of all the Bookmarks in a nice looking menu window, you need a unix utility called _dialog_. You can install in via yum, apt-get, ports, and others:
+
+```
+sudo port install dialog
+sudo yum install dialog
+sudo apt-get install dialog
+```
+
 Just copy the _hyperjump_ script someplace on your system and add the following line to your _.profile_ or _.bashrc_ file:
 
 ```
