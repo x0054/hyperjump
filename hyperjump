@@ -86,7 +86,7 @@ function jf() {
 	read -p "Forget It? [Y/N]: " -n 1 -e choice
 	case $choice in
 		"Y" | "y" )
-			tempfile=`mktemp -t "jumpdb"`
+			tempfile=`mktemp -t "XXXjumpdb"`
 			grep -v ":$wd$" $db > $tempfile
 			cat $tempfile > $db
 			rm $tempfile
