@@ -1,5 +1,5 @@
 # About HyperJump
-__HyperJump__ - simple and quick bookmark tool for bash shell. I found similar projects, but nothing that was both fast, easy to use, and simple enough. I really needed a location bookmarking app because I am working on a high latency connection, and switching between directories is a pain.
+__HyperJump__ - simple and quick bookmark tool for bash and zsh shells. I found similar projects, but nothing that was both fast, easy to use, and simple enough. I really needed a location bookmarking app because I am working on a high latency connection, and switching between directories is a pain.
 
 ## How To Use
 HyperJump consists of 3 command line commands (functions).
@@ -20,7 +20,7 @@ sudo yum install dialog
 sudo apt-get install dialog
 ```
 
-After just copy the _hyperjump_ script someplace on your system and add the following line to your _.profile_ or _.bashrc_ file:
+After just copy the _hyperjump_ script someplace on your system and add the following line to your _.profile_, _.bashrc_ or _.zshrc_ file:
 
 ```
 source /location/of/hyperjump
