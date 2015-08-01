@@ -42,9 +42,9 @@ function jr() {
 		else
 			nick=$1
 		fi
-	
+
 		nick=${nick// /_}
-	
+
 		if grep -q "^$nick:" $db
 		then
 			echo "Oops, the nickname '$nick' is already in use :( Try again...."
@@ -58,7 +58,7 @@ function jr() {
 # Jump Forget - Rmoves a jump location from the database
 function jf() {
 	db=`hyperjumpdatabase`
-	
+
 	if [ -z $1 ]
 	then
 		wd=`pwd`
@@ -80,7 +80,7 @@ function jf() {
 			echo "This nickname is not in the database!"
 			return
 		fi
-	fi	
+	fi
 
     echo "$nickname : $wd"
 	read -p "Forget It? [Y/N]: " -n 1 -e choice
@@ -102,7 +102,7 @@ function jf() {
 # Jump to Nickname - Shows the Dialog Menu with all of the jumps in the db
 function jj() {
 	db=`hyperjumpdatabase`
-	
+
 	# If no name on the prompt, than pop up the dialog, else use $1
 	if [ -z $1 ]
 	then
@@ -119,7 +119,7 @@ function jj() {
 	else
 		choice=$1
 	fi
-	
+
 	# Check if the Jump is legit, and jump
 	if grep -q "^$choice:" $db
 	then
@@ -146,14 +146,14 @@ _jj() {
 	do
 		list+=" ${line%:*}"
 	done < <(cat $db)
-	
+
     local cur=${COMP_WORDS[COMP_CWORD]}
     COMPREPLY=( $(compgen -W "$list" -- $cur) )
 }
 _jr() {
 	wd=`pwd`
 	nick=${wd##*/}
-	nick=${nick// /_}	
+	nick=${nick// /_}
     local cur=${COMP_WORDS[COMP_CWORD]}
     COMPREPLY=( $(compgen -W "$nick" -- $cur) )
 }
