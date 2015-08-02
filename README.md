@@ -13,23 +13,23 @@ All of the commands have autocomplete. Both __jj__ and __jf__ will autocomplete 
 **Examples:**
 
 ```
- # Remember current directory
- $ jr
- $ jr MyDir
+# Remember current directory
+$ jr
+$ jr MyDir
 
- # Forget current directory
- jf
+# Forget current directory
+$ jf
 
- # Forget another directory
- jf AnotherDir
+# Forget another directory
+$ jf AnotherDir
 
- # Jump to a Directory
- jj
- jj MyDir
+# Jump to a Directory
+$ jj
+$ jj MyDir
  
- # Jump to a directory and open the directory in another program(s)
- jj MyDir open
- jj MyDir open subl tm 
+# Jump to a directory and open the directory in another program(s)
+$ jj MyDir open
+$ jj MyDir open subl tm 
 ```
 
 ## How To Install
