@@ -4,7 +4,7 @@ function _hyperjumpdatabase() {
 	if [ ! -f $db ]
 	then
 	    touch $db
-		echo "HOME:${HOME}" >> $db
+		echo "home:${HOME}" >> $db
 	fi
 	echo $db
 }
@@ -124,10 +124,15 @@ function jj() {
 				line="'${line%:*}' '${line#*:}' "
 				list+=$line
 			done < <(cat $db)
-
-			local cmd="dialog --menu 'Where do you want to jump to?' 22 76 16 $list"
-			local choice=`eval $cmd 2>&1 >/dev/tty`
-			clear
+			
+			if [ "$list" == "" ]
+			then
+				echo The HyperJump Database is Empty. Bookmark a directory with the jr command to get started.
+			else
+				local cmd="dialog --menu 'Where do you want to jump to?' 22 76 16 $list"
+				local choice=`eval $cmd 2>&1 >/dev/tty`
+				clear
+			fi
 		fi
 	else
 		local choice=$1
