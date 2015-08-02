@@ -3,7 +3,7 @@ function _hyperjumpdatabase() {
 	local db="$HOME"/.hyperjumpdb
 	if [ ! -f "$db" ]
 	then
-	    touch "$db"
+		touch "$db"
 		echo "home:$HOME" >> "$db"
 	fi
 	echo "$db"
@@ -18,7 +18,7 @@ function jr() {
 
 	if grep -q "$wd$" "$db"
 	then
-	    echo "This directory is already added to the database. Run 'jf' to forget it."
+		echo "This directory is already added to the database. Run 'jf' to forget it."
 	else
 		if [ -z "$1" ]
 		then
@@ -82,7 +82,7 @@ function jf() {
 		fi
 	fi
 
-    echo "$nickname : $wd"
+	echo "$nickname : $wd"
 	read -p "Forget It? [Y/N]: " -n 1 -e choice
 	case "$choice" in
 		"Y" | "y" )
@@ -124,7 +124,7 @@ function jj() {
 				line="'${line%:*}' '${line#*:}' "
 				list+=$line
 			done < <(cat "$db")
-			
+
 			if [ "$list" == "" ]
 			then
 				echo The HyperJump Database is Empty. Bookmark a directory with the jr command to get started.
@@ -179,11 +179,11 @@ _jj() {
 	do
 		local list+=" ${line%:*}"
 	done < <(cat "$db")
-	
+
 	local cur=${COMP_WORDS[COMP_CWORD]}
 	if [ "$COMP_CWORD" -eq 1 ]
 	then
-    	COMPREPLY=( $(compgen -W "$list" -- "$cur") )
+		COMPREPLY=( $(compgen -W "$list" -- "$cur") )
 	else
 		COMPREPLY=( $(compgen -c "$cur") )
 	fi
@@ -192,8 +192,8 @@ _jr() {
 	local wd=`pwd`
 	local nick=${wd##*/}
 	local nick=${nick// /_}
-    local cur=${COMP_WORDS[COMP_CWORD]}
-    COMPREPLY=( $(compgen -W "$nick" -- "$cur") )
+	local cur=${COMP_WORDS[COMP_CWORD]}
+	COMPREPLY=( $(compgen -W "$nick" -- "$cur") )
 }
 if [[ -n "${ZSH_VERSION"-} ]]
 then
