@@ -1,14 +1,14 @@
 # Set Up the Database if it does not exist yet
 function _hyperjumpdatabase() {
 	local old_db="$HOME"/.hyperjumpdb
-	if [ -f "$old_db" ]; then
+	if [[ -f "$old_db" ]]; then
 		echo "$db"
 	fi
 
 	local dbdir="$HOME"/.local/lib
 	local db="$dbdir"/hyperjumpdb
-	if [ ! -f "$db" ]; then
-		if [ ! -d "$dbdir" ]; then
+	if [[ ! -f "$db" ]]; then
+		if [[ ! -d "$dbdir" ]]; then
 			mkdir -p "$dbdir" >> /dev/null
 		fi
 		touch "$db"
@@ -25,12 +25,10 @@ function jr() {
 	local nick=${wd##*/}
 	local nick=${nick// /_}
 
-	if grep -q "$wd$" "$db"
-	then
+	if grep -q "$wd$" "$db"; then
 		echo "This directory is already added to the database. Run 'jf' to forget it."
 	else
-		if [ -z "$1" ]
-		then
+		if [[ -z "$1" ]]; then
 			echo "We need a nickname for this directory. Use jr <name> or specify it now."
 			read -p "[C]ancel, [U]se \"$nick\", Enter [N]ickname [C/U/N]: " -n 1 -e choice
 			case "$choice" in
@@ -54,8 +52,7 @@ function jr() {
 
 		local nick=${nick// /_}
 
-		if grep -q "^$nick:" "$db"
-		then
+		if grep -q "^$nick:" "$db"; then
 			echo "Oops, the nickname '$nick' is already in use :( Try again...."
 		else
 			echo "$nick:$wd" >> "$db"
@@ -68,11 +65,9 @@ function jr() {
 function jf() {
 	local db=$(_hyperjumpdatabase)
 
-	if [ -z "$1" ]
-	then
+	if [[ -z "$1" ]]; then
 		local wd=$(pwd)
-		if grep -q ":$wd$" "$db"
-		then
+		if grep -q ":$wd$" "$db"; then
 			local dbline=$(grep ":$wd$" "$db" | head -n 1)
 			local nickname=${dbline%:*}
 		else
@@ -81,8 +76,7 @@ function jf() {
 		fi
 	else
 		local nickname=$1
-		if grep -q "^$nickname:" "$db"
-		then
+		if grep -q "^$nickname:" "$db"; then
 			local line=$(grep "^$nickname:" "$db" | head -n 1)
 			local wd=${line#*:}
 		else
@@ -114,10 +108,8 @@ function jj() {
 	local foundDialog=0
 
 	# If no name on the prompt, than pop up the dialog, else use $1
-	if [ -z "$1" ]
-	then
-		if ! type dialog > /dev/null 2>&1
-		then
+	if [[ -z "$1" ]]; then
+		if ! type dialog > /dev/null 2>&1; then
 			# Dialog Utility NOT found, so show alternative
 			echo Dialog utility NOT found. Install Dialog to get a nice menu of jump locations.
 			echo List of Saved Locations:
@@ -134,8 +126,7 @@ function jj() {
 				list+=$line
 			done < <(cat "$db")
 
-			if [ "$list" == "" ]
-			then
+			if [[ "$list" == "" ]]; then
 				echo The HyperJump Database is Empty. Bookmark a directory with the jr command to get started.
 			else
 				local cmd="dialog --menu 'Where do you want to jump to?' 22 76 16 $list"
@@ -148,8 +139,7 @@ function jj() {
 	fi
 
 	# Check if the Jump is legit, and jump
-	if grep -q "^$choice:" "$db"
-	then
+	if grep -q "^$choice:" "$db"; then
 		local line=$(grep "^$choice:" "$db" | head -n 1)
 		local target=${line#*:}
 		echo Navigating to "$choice" at "$target"
@@ -158,19 +148,16 @@ function jj() {
 		local param
 		for param in ${@:2}
 		do
-			if [ ! -z "$param" -a "$param" != "" ]
-			then
+			if [[ ! -z "$param" -a "$param" != "" ]]; then
 				local cmd="$param ./"
 				echo Running \"$cmd\" inside $choice
 				eval "$cmd"
 			fi
 		done
 	else
-		if [ -z "$choice" ]
-		then
+		if [[ -z "$choice" ]]; then
 			# Do not show the message if Dialog was not found
-			if [ "$foundDialog" -eq 1 ]
-			then
+			if [[ "$foundDialog" -eq 1 ]]; then
 				echo "Jump Cancelled"
 			fi
 		else
@@ -190,8 +177,7 @@ _jj() {
 	done < <(cat "$db")
 
 	local cur=${COMP_WORDS[COMP_CWORD]}
-	if [ "$COMP_CWORD" -eq 1 ]
-	then
+	if [[ "$COMP_CWORD" -eq 1 ]]; then
 		COMPREPLY=( $(compgen -W "$list" -- "$cur") )
 	else
 		COMPREPLY=( $(compgen -c "$cur") )
@@ -204,8 +190,7 @@ _jr() {
 	local cur=${COMP_WORDS[COMP_CWORD]}
 	COMPREPLY=( $(compgen -W "$nick" -- "$cur") )
 }
-if [[ -n "${ZSH_VERSION-}" ]]
-then
+if [[ -n "${ZSH_VERSION-}" ]]; then
 	autoload -U +X bashcompinit && bashcompinit
 fi
 complete -F _jj jj
