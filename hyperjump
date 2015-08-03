@@ -1,20 +1,21 @@
 # Set Up the Database if it does not exist yet
 function _hyperjumpdatabase() {
-	local old_db="$HOME"/.hyperjumpdb
-	if [[ -f "$old_db" ]]; then
-		echo "$db"
-	fi
-
 	local dbdir="$HOME"/.local/lib
 	local db="$dbdir"/hyperjumpdb
+	local db_old="$HOME"/.hyperjumpdb
 	if [[ ! -f "$db" ]]; then
+		# Create ~/.local/lib directory if it fors not exists
 		if [[ ! -d "$dbdir" ]]; then
 			mkdir -p "$dbdir" >> /dev/null
 		fi
-		touch "$db"
-		echo "home:$HOME" >> "$db"
+		# If old DB exists, move it to the new location
+		if [[ -f "$db_old" ]]; then
+			mv "$db_old" "$db"
+		else
+			touch "$db"
+			echo "home:$HOME" >> "$db"
+		fi
 	fi
-
 	echo "$db"
 }
 
@@ -148,7 +149,7 @@ function jj() {
 		local param
 		for param in ${@:2}
 		do
-			if [[ ! -z "$param" -a "$param" != "" ]]; then
+			if [[ ! -z "$param" && "$param" != "" ]]; then
 				local cmd="$param ./"
 				echo Running \"$cmd\" inside $choice
 				eval "$cmd"
@@ -183,6 +184,7 @@ _jj() {
 		COMPREPLY=( $(compgen -c "$cur") )
 	fi
 }
+
 _jr() {
 	local wd=$(pwd)
 	local nick=${wd##*/}
@@ -190,9 +192,11 @@ _jr() {
 	local cur=${COMP_WORDS[COMP_CWORD]}
 	COMPREPLY=( $(compgen -W "$nick" -- "$cur") )
 }
+
 if [[ -n "${ZSH_VERSION-}" ]]; then
 	autoload -U +X bashcompinit && bashcompinit
 fi
+
 complete -F _jj jj
 complete -F _jj jf
 complete -F _jr jr
