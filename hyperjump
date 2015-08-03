@@ -1,11 +1,20 @@
 # Set Up the Database if it does not exist yet
 function _hyperjumpdatabase() {
-	local db="$HOME"/.hyperjumpdb
-	if [ ! -f "$db" ]
-	then
+	local old_db="$HOME"/.hyperjumpdb
+	if [ -f "$old_db" ]; then
+		echo "$db"
+	fi
+
+	local dbdir="$HOME"/.local/lib
+	local db="$dbdir"/hyperjumpdb
+	if [ ! -f "$db" ]; then
+		if [ ! -d "$dbdir" ]; then
+			mkdir -p "$dbdir" >> /dev/null
+		fi
 		touch "$db"
 		echo "home:$HOME" >> "$db"
 	fi
+
 	echo "$db"
 }
 
