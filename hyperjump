@@ -195,7 +195,7 @@ _jr() {
 	local cur=${COMP_WORDS[COMP_CWORD]}
 	COMPREPLY=( $(compgen -W "$nick" -- "$cur") )
 }
-if [[ -n "${ZSH_VERSION"-} ]]
+if [[ -n "${ZSH_VERSION-}" ]]
 then
 	autoload -U +X bashcompinit && bashcompinit
 fi
