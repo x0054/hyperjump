@@ -49,4 +49,4 @@ sudo port install dialog
 ```
 
 ## Final Notes
-Released under the (MIT License)[https://en.wikipedia.org/wiki/MIT_License]. Use it, love it, fork it, make changes, send pull requests. Enjoy!
+Released under the [MIT License](https://en.wikipedia.org/wiki/MIT_License). Use it, love it, fork it, make changes, send pull requests. Enjoy!
