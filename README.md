@@ -7,8 +7,9 @@ HyperJump consists of 3 command line commands (functions).
 * __jr__ - Remember Jump. Bookmarks current directory. Run ``jr nickname`` to add current directory, or just run ``jr`` and use the interactive mode.
 * __jf__ - Forget Jump. Deletes the current directory from the bookmarks. Run ``jf`` while in a directory you want forgotten or ``jf nickname`` to forget a specific nickname.
 * __jj__ - Jump to a bookmark location. Run ``jj nickname`` to jump to a location or just ``jj`` to get a list of all bookmarks. You can also run ``jj nickname command`` to jump to a location and than run the command specified with "./" as the first argument. So, for instance, you can run ``jj myProject open subl`` on OSX to jump to the myProject directory and open the myProject directory in Finder and Sublime Text.
+* __jp__ - Jump to a bookmark location and save that location to the directory stack. Usage is like ``jj`` but uses ``pushd`` instead of ``cd``. 
 
-All of the commands have autocomplete. Both __jj__ and __jf__ will autocomplete with nicknames of bookmarked locations. The __jr__ command will autocomplete with the basename of the current directory. After the first argument, __jj__ will autocomplete with list of available system commands (programs).
+All of the commands have autocomplete. __jj__, __jp__, and __jf__ will autocomplete with nicknames of bookmarked locations. The __jr__ command will autocomplete with the basename of the current directory. After the first argument, __jj__ and __jp__ will autocomplete with list of available system commands (programs).
 
 **Examples:**
 
@@ -26,10 +27,15 @@ $ jf AnotherDir
 # Jump to a Directory
 $ jj
 $ jj MyDir
+
+# Jump to a Directory and push to dirs
+$ jp
+$ jp MyDir
  
 # Jump to a directory and open the directory in another program(s)
 $ jj MyDir open
 $ jj MyDir open subl tm 
+$ jp MyDir open
 ```
 
 ## How To Install
