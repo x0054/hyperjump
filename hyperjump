@@ -1,7 +1,12 @@
 # Set Up the Database if it does not exist yet
 function _hyperjumpdatabase() {
-	local dbdir="$HOME"/.local/lib
-	local db="$dbdir"/hyperjumpdb
+	if [[ -n "$HYPERJUMP_DB" ]]; then
+		local dbdir=$(dirname "$HYPERJUMP_DB");
+		local db="$HYPERJUMP_DB";
+	else
+		local dbdir="$HOME"/.local/lib
+		local db="$dbdir"/hyperjumpdb
+	fi
 	local db_old="$HOME"/.hyperjumpdb
 	if [[ ! -f "$db" ]]; then
 		# Create ~/.local/lib directory if it fors not exists
