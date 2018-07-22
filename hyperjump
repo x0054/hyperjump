@@ -31,7 +31,14 @@ function jr() {
 	else
 		if [[ -z "$1" ]]; then
 			echo "We need a nickname for this directory. Use jr <name> or specify it now."
-			read -p "[C]ancel, [U]se \"$nick\", Enter [N]ickname [C/U/N]: " -n 1 -e choice
+			echo -n "[C]ancel, [U]se \"$nick\", Enter [N]ickname [C/U/N]: "
+			if [[ -n ${ZSH_VERSION-} ]]
+			then
+				read -k 1 choice
+				echo
+			else
+				read -n 1 -e choice
+			fi
 			case "$choice" in
 				"U" | "u" )
 					echo "We are going to use $nick as the nickname for this directory."
@@ -39,7 +46,8 @@ function jr() {
 				"N" | "n" )
 					local nick=
 					while [[ "$nick" = "" ]]; do
-					   read -p "Enter a Nickname for this Directory and Press [Enter]: " -e nick
+					   echo -n "Enter a Nickname for this Directory and Press [Enter]: "
+					   read nick
 					done
 					;;
 				* )
@@ -87,7 +95,14 @@ function jf() {
 	fi
 
 	echo "$nickname : $wd"
-	read -p "Forget It? [Y/N]: " -n 1 -e choice
+	echo -n "Forget It? [Y/N]: "
+	if [[ -n ${ZSH_VERSION-} ]]
+	then
+		read -k 1 choice
+		echo
+	else
+		read -n 1 -e choice
+	fi
 	case "$choice" in
 		"Y" | "y" )
 			local tempfile=$(mktemp -t "XXXjumpdb")
