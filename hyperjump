@@ -174,7 +174,7 @@ _jj() {
 	local list=""
 	while read line
 	do
-		local list+=" ${line%:*}"
+		local list="$list ${line%:*}"
 	done < <(cat "$db")
 
 	local cur=${COMP_WORDS[COMP_CWORD]}
