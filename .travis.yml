@@ -1,0 +1,23 @@
+language: bash
+
+env:
+- TEST_SHELL=bash
+- TEST_SHELL="zsh -y" BREW_PACKAGE=zsh APT_PACKAGE=zsh
+
+os:
+- osx
+- linux
+
+before_install:
+- if [[ "$TRAVIS_OS_NAME" = "linux" ]] && [[ -n "$APT_PACKAGE" ]]; then sudo apt-get install "$APT_PACKAGE"; fi
+- if [[ "$TRAVIS_OS_NAME" = "osx" ]] && [[ -n "$BREW_PACKAGE" ]]; then brew install "$BREW_PACKAGE"; fi
+
+before_script:
+- mkdir bin
+# this shunit2 contains a bug fix that's not in an official release yet
+- curl https://raw.githubusercontent.com/kward/shunit2/f08632b331612f554e97c598508e4aac3dfa39a2/shunit2 > bin/shunit2
+- chmod +x bin/shunit2
+- PATH=$PWD/bin/:$PATH
+
+script:
+- $TEST_SHELL test.sh
