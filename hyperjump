@@ -19,6 +19,21 @@ function _hyperjumpdatabase() {
 	echo "$db"
 }
 
+# Sort Hyperjump Database
+function hjsort() {
+        local dbdir="$HOME"/.local/lib
+        local db="$dbdir"/hyperjumpdb
+	if [ -x "$(command -v sort)" ] ; then
+		if [[ -f $db ]] ; then
+			sort -o $db $db
+		else
+			echo "Can't sort hyperjump database:  db does not exist"
+		fi
+	else
+		echo "Can't sort hyperjump database:  sort command does not exist"
+	fi
+}
+
 # Jump Remember - Adds a jump to the database
 function jr() {
 	local db=$(_hyperjumpdatabase)
@@ -58,6 +73,9 @@ function jr() {
 		else
 			echo "$nick:$wd" >> "$db"
 			echo "Added $wd with Nickname \"$nick\" to the database."
+        		if [ -x "$(command -v sort)" ] ; then
+                        	sort -o $db $db
+			fi
 		fi
 	fi
 }
