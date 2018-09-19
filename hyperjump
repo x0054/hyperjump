@@ -212,7 +212,7 @@ function jp() {
 			if [[ "$list" == "" ]]; then
 				echo The HyperJump Database is Empty. Bookmark a directory with the jr command to get started.
 			else
-				local cmd="dialog --menu 'Where do you want to jump to?' 22 76 16 $list"
+				local cmd="dialog --menu 'Where do you want to jump push to?' 22 76 16 $list"
 				local choice=$(eval "$cmd" 2>&1 >/dev/tty)
 				clear
 			fi
