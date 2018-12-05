@@ -41,8 +41,12 @@ function jr() {
     local nick=${wd##*/}
     local nick=${nick// /_}
 
-    if grep -q "$wd$" "$db"; then
-        echo "This directory is already added to the database. Run 'jf' to forget it."
+    if grep -q ":$wd$" "$db"; then
+
+        local dbline=$(grep ":$wd$" "$db" | head -n 1)
+        local nickname=${dbline%:*}                                                                                                                                                                                                                   
+
+        echo "This directory is already added as '$nickname': run 'jf' to forget it."
     else
         if [[ -z "$1" ]]; then
             echo "We need a nickname for this directory. Use jr <name> or specify it now."
